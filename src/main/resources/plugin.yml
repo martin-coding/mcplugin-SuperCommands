@@ -1,0 +1,44 @@
+name: SuperCommands
+version: '${project.version}'
+main: com.martin.supercmd.SuperCommands
+api-version: 1.19
+authors: [Martin]
+description: Adds new commands
+website: https://github.com/martin-coding/mcplugin-WelcomeMessages
+commands:
+  fly:
+    description: Toggles flying
+    usage: /fly
+    permission: fly
+    permission-message: "&4No permission"
+  heal:
+    description: Fills health
+    usage: /heal
+    permission: heal
+    permission-message: "&4No permission"
+  food:
+    description: Fills hunger bar
+    usage: /food
+    permission: food
+    permission-message: "&4No permission"
+  sethealth:
+    description: Sets player health
+    usage: /sethealth <player> <value>
+    permission: sethealth
+    permission-message: "&4No permission"
+  immortal:
+    description: Makes player immortal
+    usage: /immortal
+    permission: immortal
+    permission-message: "&4No permission"
+  invulnerable:
+    description: Makes player invulnerable
+    usage: /invulnerable
+    permission: invulnerable
+    permission-message: "&4No permission"
+  godmode:
+    description: Enters godmode
+    usage: /godmode
+    aliases: god
+    permission: godmode
+    permission-message: "&4No permission"
