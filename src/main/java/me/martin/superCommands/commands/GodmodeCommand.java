@@ -1,24 +1,30 @@
-package com.martin.supercmd.commands;
+package me.martin.superCommands.commands;
 
-import com.martin.supercmd.SuperCommands;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import me.martin.superCommands.SuperCommands;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
-public class Godmode implements CommandExecutor {
-
+@NullMarked
+public class GodmodeCommand implements BasicCommand {
     private final SuperCommands plugin;
 
-    public Godmode(SuperCommands plugin) {
+    public GodmodeCommand(SuperCommands plugin) {
         this.plugin = plugin;
     }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSourceStack source, String[] args) {
+        final CommandSender sender = source.getExecutor() != null
+                ? source.getExecutor()
+                : source.getSender();
+
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can run this command");
-            return true;
+            return;
         }
 
         Player player = (Player) sender;
@@ -35,7 +41,6 @@ public class Godmode implements CommandExecutor {
         } else {
             player.sendMessage("§4usage: &6/godmode <player>§4!");
         }
-        return true;
     }
 
     private void toggleGodmode(Player player) {

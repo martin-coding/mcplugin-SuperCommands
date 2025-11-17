@@ -1,7 +1,7 @@
-package com.martin.supercmd;
+package me.martin.superCommands;
 
-import com.martin.supercmd.commands.*;
-import com.martin.supercmd.handlers.GodmodeHandler;
+import me.martin.superCommands.commands.*;
+import me.martin.superCommands.listeners.GodmodeListener;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,31 +16,23 @@ public final class SuperCommands extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         getLogger().info("SuperCommands plugin enabled!");
-
+        getServer().getPluginManager().registerEvents(new GodmodeListener(this), this);
         registerCommands();
-        registerHandlers();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         getLogger().info("SuperCommands plugin disabled!");
     }
 
     void registerCommands() {
-        getCommand("fly").setExecutor(new Fly());
-        getCommand("heal").setExecutor(new Heal());
-        getCommand("food").setExecutor(new Food());
-        getCommand("sethealth").setExecutor(new Sethealth());
-        getCommand("godmode").setExecutor(new Godmode(this));
-        getCommand("immortal").setExecutor(new Immortal(this));
-        getCommand("invulnerable").setExecutor(new Invulnerable(this));
-    }
-
-    void registerHandlers() {
-        new GodmodeHandler(this);
+        registerCommand("fly", new FlyCommand());
+        registerCommand("food", new FoodCommand());
+        registerCommand("godmode", new GodmodeCommand(this));
+        registerCommand("heal", new HealCommand());
+        registerCommand("immortal", new ImmortalCommand(this));
+        registerCommand("invulnerable", new InvulnerableCommand(this));
     }
 
     // add

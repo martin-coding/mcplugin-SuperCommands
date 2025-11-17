@@ -1,7 +1,6 @@
-package com.martin.supercmd.handlers;
+package me.martin.superCommands.listeners;
 
-import com.martin.supercmd.SuperCommands;
-import org.bukkit.Bukkit;
+import me.martin.superCommands.SuperCommands;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,19 +9,17 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class GodmodeHandler implements Listener {
-
+public class GodmodeListener implements Listener {
     private final SuperCommands plugin;
 
-    public GodmodeHandler(SuperCommands plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public GodmodeListener(SuperCommands plugin) {
         this.plugin = plugin;
     }
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (plugin.getGodPlayers().contains(player) || plugin.getInvulnerablePlayers().contains(player)) {
                 event.setCancelled(true);
                 if (plugin.getGodPlayers().contains(player) && player.getFireTicks() != 0) {
@@ -31,6 +28,7 @@ public class GodmodeHandler implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
@@ -41,12 +39,11 @@ public class GodmodeHandler implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onHunger(FoodLevelChangeEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            if (plugin.getGodPlayers().contains(player) || plugin.getInvulnerablePlayers().contains(player)) {
+        if (event.getEntity() instanceof Player player) {
+            if (plugin.getGodPlayers().contains(player)) {
                 event.setCancelled(true);
             }
         }
