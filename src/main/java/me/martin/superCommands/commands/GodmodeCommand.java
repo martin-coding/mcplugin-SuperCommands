@@ -2,11 +2,14 @@ package me.martin.superCommands.commands;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import me.martin.superCommands.SuperAttributes;
 import me.martin.superCommands.SuperCommands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.Collection;
 
 @NullMarked
 public class GodmodeCommand implements BasicCommand {
@@ -22,36 +25,47 @@ public class GodmodeCommand implements BasicCommand {
                 ? source.getExecutor()
                 : source.getSender();
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can run this command");
+        // Toggle god mode for player type senders without arguments
+        if (args.length == 0 && sender instanceof Player player) {
+            toggleGodmode(player);
             return;
         }
 
-        Player player = (Player) sender;
-
-        if (args.length == 0) {
-            toggleGodmode(player);
-        } else if(args.length == 1) {
+        if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
-            if (target != null) {
-                toggleGodmode(target);
-            } else {
-                player.sendMessage("§4Player §6" + args[0] + " §4not found!");
+            if (target == null) {
+                sender.sendMessage("§4Player §6" + args[0] + " §4not found!");
+                return;
             }
-        } else {
-            player.sendMessage("§4usage: &6/godmode <player>§4!");
+            toggleGodmode(target);
+            return;
         }
+        sender.sendMessage("§4usage: &6/godmode <player>§4!");
     }
 
     private void toggleGodmode(Player player) {
-        if (plugin.hasGodPlayers()) {
-            if (plugin.getGodPlayers().contains(player)) {
-                plugin.removeGodPlayer(player);
-                player.sendMessage("§cYou are no longer in God mode!");
-                return;
-            }
+        if (!plugin.superPlayers.containsKey(player.getUniqueId())) {
+            plugin.superPlayers.put(player.getUniqueId(), new SuperAttributes());
         }
-        plugin.addGodPlayer(player);
-        player.sendMessage("§cYou are now in God mode!");
+        SuperAttributes superAttributes = plugin.superPlayers.get(player.getUniqueId());
+        if (superAttributes.isGodmode()) {
+            superAttributes.setGodmode(false);
+            player.sendMessage("§cYou are no longer in godmode!");
+        } else {
+            superAttributes.setGodmode(true);
+            player.sendMessage("§cYou are now in godmode!");
+        }
+    }
+
+    @Override
+    public Collection<String> suggest(CommandSourceStack source, String[] args) {
+        if (args.length == 0) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+        }
+
+        return Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName)
+                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .toList();
     }
 }

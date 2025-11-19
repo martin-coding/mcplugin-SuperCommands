@@ -4,6 +4,9 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.martin.superCommands.SuperAttributes;
 import me.martin.superCommands.SuperCommands;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,10 +15,10 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Collection;
 
 @NullMarked
-public class InvulnerableCommand implements BasicCommand {
+public class SuperstatsCommand implements BasicCommand {
     private final SuperCommands plugin;
 
-    public InvulnerableCommand(SuperCommands plugin) {
+    public SuperstatsCommand(SuperCommands plugin) {
         this.plugin = plugin;
     }
 
@@ -25,35 +28,24 @@ public class InvulnerableCommand implements BasicCommand {
                 ? source.getExecutor()
                 : source.getSender();
 
-        // Toggle invulnerability for player type senders without arguments
-        if (args.length == 0 && sender instanceof Player player) {
-            toggleInvulnerability(player);
-            return;
-        }
-
         if (args.length == 1) {
             Player target = Bukkit.getPlayer(args[0]);
+
             if (target == null) {
                 sender.sendMessage("§4Player §6" + args[0] + " §4not found!");
                 return;
             }
-            toggleInvulnerability(target);
-            return;
-        }
-        sender.sendMessage("§4usage: &6/godmode <player>§4!");
-    }
 
-    private void toggleInvulnerability(Player player) {
-        if (!plugin.superPlayers.containsKey(player.getUniqueId())) {
-            plugin.superPlayers.put(player.getUniqueId(), new SuperAttributes());
-        }
-        SuperAttributes superAttributes = plugin.superPlayers.get(player.getUniqueId());
-        if (superAttributes.isInvulnerable()) {
-            superAttributes.setInvulnerable(false);
-            player.sendMessage("§cYou are no longer invulnerable!");
-        } else {
-            superAttributes.setInvulnerable(true);
-            player.sendMessage("§cYou are now invulnerable!");
+            SuperAttributes superAttributes = plugin.superPlayers.getOrDefault(target.getUniqueId(), new SuperAttributes());
+            final Component statsMessage = MiniMessage.miniMessage().deserialize(
+                    "<rainbow><bold>SUPER STATS</rainbow> of <gold><name></gold> <light_purple> \n Immortal: <immortal> \n Invulnerable: <invulnerable> \n No hunger: <nohunger>",
+                    Placeholder.unparsed("name", target.getName()),
+                    Placeholder.unparsed("immortal", String.valueOf(superAttributes.isImmortal())),
+                    Placeholder.unparsed("invulnerable", String.valueOf(superAttributes.isInvulnerable())),
+                    Placeholder.unparsed("nohunger", String.valueOf(superAttributes.isNoHunger()))
+            );
+
+            sender.sendMessage(statsMessage);
         }
     }
 

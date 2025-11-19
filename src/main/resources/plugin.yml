@@ -1,5 +1,5 @@
 name: SuperCommands
-version: '${project.version}'
+version: '1.0.2'
 main: me.martin.superCommands.SuperCommands
 api-version: '1.21'
 authors: [Martin]
