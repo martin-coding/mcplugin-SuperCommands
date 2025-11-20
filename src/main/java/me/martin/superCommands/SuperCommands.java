@@ -30,5 +30,6 @@ public final class SuperCommands extends JavaPlugin {
         registerCommand("immortal", new ImmortalCommand(this));
         registerCommand("invulnerable", new InvulnerableCommand(this));
         registerCommand("superstats", new SuperstatsCommand(this));
+        registerCommand("nohunger", new NohungerCommand(this));
     }
 }

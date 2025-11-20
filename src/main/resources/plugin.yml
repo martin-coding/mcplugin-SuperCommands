@@ -1,5 +1,5 @@
 name: SuperCommands
-version: '1.0.2'
+version: '1.1.0'
 main: me.martin.superCommands.SuperCommands
 api-version: '1.21'
 authors: [Martin]
